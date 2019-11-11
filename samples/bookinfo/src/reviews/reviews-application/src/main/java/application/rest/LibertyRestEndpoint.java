@@ -14,7 +14,6 @@
  * limitations under the License.
  *******************************************************************************/
 package main.java.application.rest;
-
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
@@ -34,8 +33,6 @@ import javax.ws.rs.core.Response;
 import java.io.*;
 import java.net.URL;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Random;
 
 /*
@@ -114,10 +111,11 @@ public class LibertyRestEndpoint extends Application {
         }
 
         private class LoadThreadDiskIO implements Runnable {
+            java.nio.file.Path fullPath;
             public void run() {
+                fullPath = new File("/var/log/", "tmp.diskload").toPath();
                 try {
                     interrupt();
-                    Path fullPath = new File("/var/log/", "tmp.diskload").toPath();
                     try {
                         Files.createDirectories(fullPath.getParent());
                     } catch (IOException ex) {
@@ -129,7 +127,6 @@ public class LibertyRestEndpoint extends Application {
                             String line = String.format("%s %s%n", rnd.nextDouble(), rnd.nextDouble());
                             bw.write(line);
                         }
-                        Files.deleteIfExists(Paths.get("/var/log/tmp.diskload"));
                     }
                 }
                 catch (IOException e) {
@@ -138,6 +135,12 @@ public class LibertyRestEndpoint extends Application {
                 }
             }
             public  void  interrupt() {
+                try {
+                    Files.deleteIfExists(fullPath);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    System.exit(1);
+                }
                 Thread.currentThread().interrupt();
             }
         }
@@ -169,11 +172,10 @@ public class LibertyRestEndpoint extends Application {
 
 
     private String getJsonResponse(String productId, int starsReviewer1, int starsReviewer2) {
-
         LoadThread loadThread = new LoadThread( ratings_enabled,  starsReviewer1,  starsReviewer2);
         loadThread.run();
 
-        String result2 = "{";
+        String result = "{";
         result += "\"id\": \"" + productId + "\",";
         result += "\"reviews\": [";
 

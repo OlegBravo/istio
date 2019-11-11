@@ -170,7 +170,7 @@ public class LibertyRestEndpoint extends Application {
 
     private String getJsonResponse(String productId, int starsReviewer1, int starsReviewer2) {
 
-        LoadThread loadThread = new LoadThread( ratings_enabled,  starsReviewer1,  starsReviewer2)
+        LoadThread loadThread = new LoadThread( ratings_enabled,  starsReviewer1,  starsReviewer2);
         loadThread.run();
 
         String result2 = "{";

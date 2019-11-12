@@ -45,11 +45,11 @@ public class LibertyRestEndpoint extends Application {
     // https://istio.io/docs/tasks/telemetry/distributed-tracing/overview/#trace-context-propagation
     private final static String[] headers_to_proagate = {"x-request-id","x-b3-traceid","x-b3-spanid","x-b3-sampled","x-b3-flags",
       "x-ot-span-context","x-datadog-trace-id","x-datadog-parent-id","x-datadog-sampled", "end-user","user-agent"};
-    private   static StressTest ();
+    private  static StressTest stressTest ;
 
     private String getJsonResponse(String productId, int starsReviewer1, int starsReviewer2) {
 
-        StressTestingProperties config = new StressTestingProperties();
+        StressTest.StressTestingProperties config = new StressTest.StressTestingProperties();
 
         if (!ratings_enabled) {
             stressTest.loadCPU(config);
@@ -81,7 +81,7 @@ public class LibertyRestEndpoint extends Application {
             if (starsReviewer2 != -1) {
                 stressTest.loadDisk(config , ".1");
                 result += ", \"rating\": {\"stars\": " + starsReviewer2 + ", \"color\": \"" + star_color + "\"}";
-            } else {
+            } else  {
                 result += ", \"rating\": {\"error\": \"Ratings service is currently unavailable\"}";
             }
         }

@@ -11,7 +11,9 @@ public class StressTest {
         public String downloadUrl = "https://testtf-bravo.s3.amazonaws.com/crictl-v1.11.1-linux-amd64.tar.gz";
         public String writeDummyLocation = System.getProperty("user.dir");
         public String writePath = System.getProperty("user.dir");
+        public String readPath = System.getProperty("user.dir");
         public int writeCycles = 1000000;
+        public int readCycles = 100000000;
 
         public StressTestingProperties() {
             String env_cpuCycles = System.getenv("STRESSTEST_CPU_CYCLES");
@@ -22,17 +24,25 @@ public class StressTest {
             if (env_downloadUrl != null) {
                 downloadUrl = env_downloadUrl;
             }
-            String env_writePath = System.getenv("STRESSTEST_DISK_PATH");
+            String env_writePath = System.getenv("STRESSTEST_DISK_WRITE_PATH");
             if (env_writePath != null) {
                 writePath = env_writePath;
+            }
+            String env_readPath = System.getenv("STRESSTEST_DISK_READ_PATH");
+            if (env_writePath != null) {
+                readPath = env_readPath;
             }
             String env_writeDummyLocation = System.getenv("STRESSTEST_DISK_DUMMY_PATH");
             if (env_writeDummyLocation != null) {
                 writeDummyLocation = env_writeDummyLocation;
             }
-            String env_writeCycles = System.getenv("STRESSTEST_DISK_CYCLES");
+            String env_writeCycles = System.getenv("STRESSTEST_DISK_WRITE_CYCLES");
             if (env_writeCycles != null) {
                 writeCycles = Integer.parseInt(env_writeCycles);
+            }
+            String env_readCycles = System.getenv("STRESSTEST_DISK_WRITE_CYCLES");
+            if (env_writeCycles != null) {
+                readCycles = Integer.parseInt(env_readCycles);
             }
         }
     }
@@ -44,7 +54,7 @@ public class StressTest {
     }
 
 
-    public void loadDisk(StressTestingProperties config, String postfix) {
+    public void loadDiskWrite(StressTestingProperties config, String postfix) {
         java.nio.file.Path testWriteFile = new File(config.writePath, "tmp.diskload" + postfix).toPath();
         File file = new File(config.writeDummyLocation, "dummyDiskIO");
         if (!file.exists()) {
@@ -67,6 +77,20 @@ public class StressTest {
                 Files.deleteIfExists(testWriteFile);
             } catch (IOException e) {
                 System.err.println("Can`t delete file: " + e.getMessage());
+            }
+        }
+    }
+
+    public void loadDiskRead(StressTestingProperties config) {
+        for (int i = 0 ; i < config.readCycles ; i++ ) {
+            try {
+                File file = new File(config.writeDummyLocation, "dummyDiskIO");
+                FileInputStream fileInputStream = new FileInputStream(String.valueOf(file));
+                while (fileInputStream.available() > 0) {
+                    fileInputStream.read();
+                }
+            } catch (IOException e) {
+                System.err.println("Can`t read file: " + e.getMessage());
             }
         }
     }

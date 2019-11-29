@@ -13,7 +13,7 @@ public class StressTest {
         public String writePath = System.getProperty("user.dir");
         public String readPath = System.getProperty("user.dir");
         public int writeCycles = 1000000;
-        public int readCycles = 100000000;
+        public int readCycles = 1000000;
 
         public StressTestingProperties() {
             String env_cpuCycles = System.getenv("STRESSTEST_CPU_CYCLES");

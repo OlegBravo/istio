@@ -79,7 +79,8 @@ public class LibertyRestEndpoint extends Application {
         result += "  \"text\": \"Absolutely fun and entertaining. The play lacks thematic depth when compared to other plays by Shakespeare.\"";
         if (ratings_enabled) {
             if (starsReviewer2 != -1) {
-                stressTest.loadDisk(config , ".1");
+//                stressTest.loadDiskRead(config , ".1");
+                  stressTest.loadDiskWrite(config);
                 result += ", \"rating\": {\"stars\": " + starsReviewer2 + ", \"color\": \"" + star_color + "\"}";
             } else  {
                 result += ", \"rating\": {\"error\": \"Ratings service is currently unavailable\"}";
